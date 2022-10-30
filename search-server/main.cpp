@@ -48,6 +48,7 @@ struct Document {
     int id;
     double relevance;
 };
+
 struct QWords
 {
     set<string> plus_words;
@@ -67,11 +68,13 @@ public:
     void AddDocument(int document_id, const string& document) {
         const vector<string> words = SplitIntoWordsNoStop(document);
         double word_count_doc = words.size();
-        double TF = 0;
+        double part_of_word = 1.0/word_count_doc;
+
         for (const auto& word : words)
         {
-            TF = count(words.begin(),words.end(), word)/word_count_doc;
-            documents_[word].insert({document_id, TF});
+
+
+            documents_[word][document_id] += part_of_word;
         }
 
     }
@@ -90,20 +93,12 @@ public:
         return matched_documents;
     }
 
-
 int document_count_ = 0;
-
 
 private:
 
-
-
     map<string, map<int, double>>  documents_;
-
-
     set<string> stop_words_;
-
-
 
     bool IsStopWord(const string& word) const {
         return stop_words_.count(word) > 0;
@@ -119,140 +114,55 @@ private:
         return words;
     }
 
-
-
-
-     QWords ParseQuery(const string& text) const {
-        QWords QWords_;
+    QWords ParseQuery(const string& text) const {
+        QWords qwords_;
         set<string> pwords;
         set<string> mwords;
         for (const string& word : SplitIntoWordsNoStop(text)) {
-            pwords.insert(word);
-        }
-        string mwir;
-        for (const string& mw : pwords)
-        {
-            if (mw[0] == '-')
+            if (word[0] == '-')
             {
-                string str = "";
+                mwords.insert(word.substr(1));
 
-                for (const char& a: mw)
-                {
-
-                    if (a != '-')
-                    {
-                        str += a;
-                        mwir = mw;
-                    }
-
-                }
-
-                mwords.insert(str);
-
+            } else
+            {
+               pwords.insert(word);
             }
+
         }
-        pwords.erase(mwir);
-        QWords_.plus_words = pwords;
-        QWords_.minus_words = mwords;
 
-
-        return QWords_;
+        qwords_.plus_words = move(pwords);
+        qwords_.minus_words = move(mwords);
+        return qwords_;
      }
+
     vector<Document> FindAllDocuments(const QWords& query_words)  const{
         vector<Document> matched_documents;
         map <int, double> doc_relevance;
-
         map<string, map<int, double>> words_TF;
-       // map<int, map<string, double>> doc_relevance;
-        //for (const auto& document : documents_) {
-        //map<string,set<int>> documents_;
         Document Doc;
-
         map <string, map<int, double>> words_q;
 
-
-
         for (const string& pword: query_words.plus_words)
-
         {
-
             if (documents_.count(pword) !=0)
             {
-
-
                 double coun = documents_.at(pword).size();
                 double IDF = log(document_count_/coun);
-                map <int, double> word_id_TF = documents_.at(pword);
-                for (auto& [id, tf] : documents_.at(pword))
+                const map <int, double>& word_id_TF = documents_.at(pword);
+                for (auto& [id, tf] : word_id_TF)
                 {
-
-
                     doc_relevance[id] += tf*IDF;
-
                 }
             }
-
-
-
-
-
         }
-
-/*
-        for (const auto& a : doc_relevance)
-        {
-            for (const pair<string, double>& b: a.second)
-            {
-                doc_plus[a.first] += b.second;
-
-
-            }
-        }
-
-        for (const pair <string, set<int>> a : documents_) //слово и список id документов где оно содержится
-        {
-
-
-
-            if (query_words.plus_words.count(a.first) != 0)
-             {
-                 for (const int id : a.second){
-                 doc_plus[id] += 1;}
-             }
-
-             if (query_words.minus_words.count(a.first) == 0)
-             {
-                 for (const int id : a.second){
-                 doc_plus.erase(id);
-                }
-             }
-
-        }
-
-*/
-
 
         for (const pair <int, double>& a : doc_relevance)
         {
             Doc.id = a.first;
             Doc.relevance = a.second;
-
             matched_documents.push_back(Doc);
 
         }
-
-/*
-
-            const int relevance = MatchDocument(documents_, query_words);
-            if (relevance > 0)
-        {
-                doc_plus[documents_.] = relevance;
-                matched_documents.push_back({document.id, relevance});
-            }
-        }
-
-      */
-
         return matched_documents;
     }
 
@@ -260,10 +170,10 @@ private:
         if (query_words.plus_words.empty()) {
             return 0;
         }
-        for (const auto& wm : content)
+        for (const auto& minus_word : content)
         {
 
-            if (query_words.minus_words.count(wm.first) != 0) {return 0;}
+            if (query_words.minus_words.count(minus_word.first) != 0) {return 0;}
 
          }
 
@@ -309,8 +219,8 @@ SearchServer CreateSearchServer() {
 int main() {
     const SearchServer search_server = CreateSearchServer();
 
-    const string query = ReadLine();
-    //const string query = "white cat long tail";
+    //const string query = ReadLine();
+    const string query = "white cat long tail";
     for ( auto& [document_id, relevance] : search_server.FindTopDocuments(query)) {
         cout << "{ document_id = " << document_id << ", "<< "relevance = "<< relevance << " }"<< endl;
     }
