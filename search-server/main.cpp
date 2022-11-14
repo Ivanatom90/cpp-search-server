@@ -71,12 +71,9 @@ public:
         double part_of_word = 1.0/word_count_doc;
 
         for (const auto& word : words)
-        {
-
-
+        {           
             documents_[word][document_id] += part_of_word;
         }
-
     }
 
     vector<Document> FindTopDocuments(const string& raw_query) const {
@@ -115,7 +112,7 @@ private:
     }
 
     QWords ParseQuery(const string& text) const {
-        QWords qwords_;
+        QWords qwords;
         set<string> pwords;
         set<string> mwords;
         for (const string& word : SplitIntoWordsNoStop(text)) {
@@ -132,7 +129,7 @@ private:
 
         qwords_.plus_words = move(pwords);
         qwords_.minus_words = move(mwords);
-        return qwords_;
+        return qwords;
      }
 
     vector<Document> FindAllDocuments(const QWords& query_words)  const{
@@ -161,7 +158,6 @@ private:
             Doc.id = a.first;
             Doc.relevance = a.second;
             matched_documents.push_back(Doc);
-
         }
         return matched_documents;
     }
@@ -172,15 +168,11 @@ private:
         }
         for (const auto& minus_word : content)
         {
-
             if (query_words.minus_words.count(minus_word.first) != 0) {return 0;}
-
          }
-
 
         set<string> matched_words;
         for (const pair<string,map<int, double>> word : content) {
-
             if (matched_words.count(word.first) != 0) {
                 continue;
             }
@@ -194,32 +186,21 @@ private:
 
 SearchServer CreateSearchServer() {
     SearchServer search_server;
-    //search_server.SetStopWords("is are was a an in the with near at");
     search_server.SetStopWords(ReadLine());
-
     const int document_count = ReadLineWithNumber();
-    //const int document_count = 3;
     search_server.document_count_ = document_count;
-
     vector<string> doc_str;
     doc_str.push_back("a colorful parrot with green wings and red tail is lost");
     doc_str.push_back("a grey hound with black ears is found at the railway station");
     doc_str.push_back("a white cat with long furry tail is found near the red square");
-
     for (int document_id = 0; document_id < document_count; ++document_id) {
         search_server.AddDocument(document_id, ReadLine());
-        //search_server.AddDocument(document_id, doc_str[document_id]);
-
-
     }
-
     return search_server;
 }
 
 int main() {
     const SearchServer search_server = CreateSearchServer();
-
-    //const string query = ReadLine();
     const string query = "white cat long tail";
     for ( auto& [document_id, relevance] : search_server.FindTopDocuments(query)) {
         cout << "{ document_id = " << document_id << ", "<< "relevance = "<< relevance << " }"<< endl;
