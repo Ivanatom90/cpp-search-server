@@ -455,9 +455,10 @@ int main() {
     for (const Document& document : search_server.FindTopDocuments("пушистый ухоженный кот", [](int document_id, DocumentStatus status, int rating) { return document_id % 2 == 0; })) {
         PrintDocument(document);
     }
-    return 0;
+   
 
-    return 0;
+   
     // Если вы видите эту строку, значит все тесты прошли успешно
     cout << "Search server testing finished" << endl;
+     return 0;
 }
