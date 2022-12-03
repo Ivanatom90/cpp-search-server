@@ -52,15 +52,6 @@ static bool IsValidWord(const string& word) {
     });
 }
 
-bool QueryMistake(const string& stri) {
-
-        if(stri.empty()) {return false;}
-
-  return true;
-}
-
-
-
 struct Document {
     Document() = default;
 
@@ -184,7 +175,7 @@ vector<Document> FindTopDocuments(const string& raw_query) const {
 tuple<vector<string>, DocumentStatus>  MatchDocument(const string& raw_query,int document_id) const {
 
         if (raw_query.empty()) {throw invalid_argument("not_query");}
-    if (!QueryMistake(raw_query) || documents_.count(document_id) == 0) {
+    if (raw_query.empty() || documents_.count(document_id) == 0) {
         throw invalid_argument("Match_Doc_query or document_id_invalid");
         }
 
@@ -262,16 +253,14 @@ private:
     QueryWord ParseQueryWord(string text) const {
         bool is_minus = false;
         // Word shouldn't be empty
-
-        if (!QueryMistake(text)){
-        throw 	invalid_argument("Mistake in query");
-            }
             if (!IsValidWord(text)){throw  invalid_argument("two invalid word");}
         if (text[0] == '-') {
             is_minus = true;
             text = text.substr(1);
-            if (text[0] == '-' || text.empty()){throw  invalid_argument("two minus in word");}
+            if (text.empty()){throw  invalid_argument("QueryWord empty");}
         }
+            if (text[0] == '-'){throw  invalid_argument("two minuses in minus word");}
+
 
         return {text, is_minus, IsStopWord(text)};
     }
