@@ -53,8 +53,8 @@ static bool IsValidWord(const string& word) {
 }
 
 bool QueryMistake(const string& stri) {
-    if (!IsValidWord(stri)){return false;}
-        if(stri[stri.size()-1]=='-') {return false;}
+
+        if(stri.empty()) {return false;}
 
   return true;
 }
@@ -75,17 +75,8 @@ struct Document {
     int rating = 0;
 };
 
-set<string> MakeUniqueNonEmptyStrings(const vector<string>& strings) {
-    set<string> non_empty_strings;
-    for (const string& str : strings) {
-        if (!str.empty()) {
-            non_empty_strings.insert(str);
-        }
-    }
-    return non_empty_strings;
-}
-
-set<string> MakeUniqueNonEmptyStrings(const set<string>& strings) {
+template <typename T>
+T MakeUniqueNonEmptyStrings (const T& strings) {
     set<string> non_empty_strings;
     for (const string& str : strings) {
         if (!str.empty()) {
@@ -152,9 +143,7 @@ void AddDocument(int document_id, const string& document, DocumentStatus status,
     vector<Document> FindTopDocuments(const string& raw_query,
                                       DocumentPredicate document_predicate) const {
 
-        if (!QueryMistake(raw_query)){
-        throw 	invalid_argument("Mistake in query");
-            }
+
 
         const Query query = ParseQuery(raw_query);
 
@@ -273,10 +262,15 @@ private:
     QueryWord ParseQueryWord(string text) const {
         bool is_minus = false;
         // Word shouldn't be empty
+
+        if (!QueryMistake(text)){
+        throw 	invalid_argument("Mistake in query");
+            }
+            if (!IsValidWord(text)){throw  invalid_argument("two invalid word");}
         if (text[0] == '-') {
             is_minus = true;
             text = text.substr(1);
-            if (text[0] == '-'){throw  invalid_argument("two minus in word");}
+            if (text[0] == '-' || text.empty()){throw  invalid_argument("two minus in word");}
         }
 
         return {text, is_minus, IsStopWord(text)};
