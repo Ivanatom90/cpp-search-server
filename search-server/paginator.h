@@ -11,21 +11,23 @@ public:
         : range_begin_(range_begin), range_end_(range_end) {
 
     }
-    auto begin() const {
+    Iterator begin() const {
         return range_begin_;
     }
 
-    auto end()  const {
+    Iterator end()  const {
         return range_end_;
     }
 
-    auto size() const {
-        return range_end_ - range_begin_;
+    Iterator size() const {
+        size_ = range_end_ - range_begin_;
+        return size_;
     }
 
 private:
     Iterator range_begin_;
     Iterator range_end_;
+     size_t size_;
 };
 
 
@@ -48,27 +50,28 @@ class Paginator {
 
     }
 
-    auto begin() const {
+    Iterator begin() const {
         return page.begin();
     }
 
-    auto end() const {
+    Iterator end() const {
         return page.end();
     }
 
-    auto size() const {
+    int size() const {
         return  page.size();
     }
 
 
 
-vector <IteratorRange<Iterator>> page;
+std::vector <IteratorRange<Iterator>> page;
 
 
 };
 
 template <typename Container>
- auto Paginate  (const Container& c, int page_size) {
+auto  Paginate(const Container& c, int page_size) {
     return Paginator(c.begin(), c.end(), page_size);
 }
+
 
