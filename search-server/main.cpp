@@ -28,3 +28,4 @@ int main() {
     std::cout << "Total empty requests: " << request_queue.GetNoResultRequests() << std::endl;
     return 0;
 }
+
