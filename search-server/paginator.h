@@ -67,3 +67,8 @@ vector <IteratorRange<Iterator>> page;
 
 };
 
+template <typename Container>
+ auto Paginate  (const Container& c, int page_size) {
+    return Paginator(c.begin(), c.end(), page_size);
+}
+
