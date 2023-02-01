@@ -3,10 +3,13 @@
 #include "string_processing.h"
 #include "search_server.h"
 #include "request_queue.h"
+#include "paginator.h"
 
 using namespace std;
 
+
 int main() {
+    //SearchServer search_server(vector<string>{"and", "in", "at"});
     SearchServer search_server(std::string("and in at"));
     RequestQueue request_queue(search_server);
     search_server.AddDocument(1, std::string("curly cat curly tail"), DocumentStatus::ACTUAL, {7, 2, 7});
