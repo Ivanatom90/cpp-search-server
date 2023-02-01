@@ -98,9 +98,7 @@ bool SearchServer::IsStopWord(const string& word) const {
          return 0;
      }
      int rating_sum = 0;
-
-     rating_sum = accumulate(ratings.begin(), ratings.end(), true);
-
+     rating_sum = accumulate(ratings.begin(), ratings.end(), 0);
      return rating_sum / static_cast<int>(ratings.size());
  }
 
