@@ -16,7 +16,7 @@
 #include "string_processing.h"
 
 
-
+using namespace std::literals;
 
 const int MAX_RESULT_DOCUMENT_COUNT = 5;
 
