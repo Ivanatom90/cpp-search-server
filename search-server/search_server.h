@@ -15,17 +15,11 @@
 #include "read_input_functions.h"
 #include "string_processing.h"
 
-
-using namespace std::literals;
-
 const int MAX_RESULT_DOCUMENT_COUNT = 5;
-
 
 class SearchServer {
 
 public:
-
-
 
     template <typename StringContainer>
     explicit SearchServer(const StringContainer& stop_words);
@@ -38,21 +32,26 @@ public:
     template <typename DocumentPredicate>
     std::vector<Document> FindTopDocuments(const  std::string& raw_query,
                                       DocumentPredicate document_predicate) const;
-
      std::vector<Document> FindTopDocuments(const  std::string& raw_query, DocumentStatus status) const;
-
      std::vector<Document> FindTopDocuments(const  std::string& raw_query) const;
-
-
-
 
     int GetDocumentCount() const;
 
-    int GetDocumentId(int index) const;
+    //int GetDocumentId(int index) const;
 
-
-     std::tuple< std::vector< std::string>, DocumentStatus> MatchDocument(const  std::string& raw_query,
+    std::tuple< std::vector< std::string>, DocumentStatus> MatchDocument(const  std::string& raw_query,
                                                         int document_id) const;
+    //---------------------------------------------------------
+
+    std::vector<int>::const_iterator begin();
+    std::vector<int>::const_iterator end();
+
+    std::map<int, std::map<std::string, double>> document_to_words_freqs_;
+
+     const std::map<std::string, double>& GetWordFrequencies(int document_id) const;
+  //const  std::map<std::string, double>& GetWordFrequencies(int document_id);
+
+  void RemoveDocument(int document_id);
 
 private:
     struct DocumentData {
