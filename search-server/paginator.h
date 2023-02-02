@@ -1,10 +1,9 @@
 #pragma once
+#include <iostream>
 #include <vector>
 #include <set>
 #include <map>
 #include <cmath>
-#include "document.h"
-
 
 template <typename Iterator>
 class IteratorRange {
@@ -13,15 +12,15 @@ public:
         : range_begin_(range_begin), range_end_(range_end) {
 
     }
-    auto begin() const {
+    Iterator begin() const {
         return range_begin_;
     }
 
-    auto end()  const {
+    Iterator end()  const {
         return range_end_;
     }
 
-    auto size() const {
+    Iterator size() const {
         return range_end_ - range_begin_;
     }
 
@@ -62,19 +61,23 @@ class Paginator {
         return  page.size();
     }
 
+
+
 std::vector <IteratorRange<Iterator>> page;
+
 
 };
 
 template <typename Container>
-auto  Paginate(const Container& c, int page_size) {
+auto  Paginate(const Container& c, size_t page_size) {
     return Paginator(c.begin(), c.end(), page_size);
 }
 
-template <typename It> 
-std::ostream& operator<<(std::ostream& out, const IteratorRange<It>& range) { 
-    for (It it = range.begin(); it != range.end(); ++it) { 
-        out << *it; 
-    } 
-    return out; 
-} 
+template <typename It>
+std::ostream& operator<<(std::ostream& out, const IteratorRange<It>& range) {
+    for (It it = range.begin(); it != range.end(); ++it) {
+        out << *it;
+    }
+    return out;
+}
+
