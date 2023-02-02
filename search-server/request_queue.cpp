@@ -39,9 +39,6 @@ vector<Document> RequestQueue::AddFindRequest(const string& raw_query) {
 return vector_result;
 }
 
-
 int RequestQueue::GetNoResultRequests() const {
     return empty_request_counter;
 }
-
-
