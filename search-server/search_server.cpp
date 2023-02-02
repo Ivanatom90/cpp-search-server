@@ -18,6 +18,7 @@ void SearchServer::AddDocument(int document_id, const string& document, Document
     const double inv_word_count = 1.0 / words.size();
     for (const string& word : words) {
         word_to_document_freqs_[word][document_id] += inv_word_count;
+        document_to_words_freqs_[document_id][word] += inv_word_count;
     }
     documents_.emplace(document_id, DocumentData{ComputeAverageRating(ratings), status});
     document_ids_.push_back(document_id);
@@ -37,11 +38,11 @@ vector<Document> SearchServer::FindTopDocuments(const string& raw_query) const {
 int SearchServer::GetDocumentCount() const {
     return documents_.size();
 }
-
+/*
 int SearchServer::GetDocumentId(int index) const {
     return document_ids_.at(index);
 }
-
+*/
 tuple<vector<string>, DocumentStatus> SearchServer::MatchDocument(const string& raw_query,
                                                     int document_id) const {
     const auto query = ParseQuery(raw_query);
@@ -137,4 +138,45 @@ bool SearchServer::IsStopWord(const string& word) const {
 
   double SearchServer::ComputeWordInverseDocumentFreq(const string& word) const {
       return log(GetDocumentCount() * 1.0 / word_to_document_freqs_.at(word).size());
+  }
+
+
+  //-----------------------------------------------------
+
+
+  std::vector<int>::const_iterator SearchServer::begin(){
+      return document_ids_.begin();
+  }
+
+  std::vector<int>::const_iterator SearchServer::end(){
+      return document_ids_.end();
+  }
+
+  const  std::map<std::string, double>& SearchServer::GetWordFrequencies(int document_id) const {
+     if (document_to_words_freqs_.at(document_id).empty()){
+      const static map<std::string, double> empty_map{};
+      return empty_map;
+         //return map<string, double>{};
+      }
+return document_to_words_freqs_.at(document_id);
+ }
+
+  void SearchServer::RemoveDocument(int document_id){
+      if(document_to_words_freqs_.at(document_id).empty()){
+          return;
+      }
+
+      for (pair<string, double> a : document_to_words_freqs_[document_id]){
+                if(word_to_document_freqs_[a.first].count(document_id)){
+                     word_to_document_freqs_[a.first].erase(document_id);
+                }
+      }
+
+      document_to_words_freqs_.erase(document_id);
+      documents_.erase(document_id);
+      auto it = find(document_ids_.begin(), document_ids_.end(), document_id);
+      if (it != document_ids_.end()){
+          document_ids_.erase(it);
+      }
+
   }
