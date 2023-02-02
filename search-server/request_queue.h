@@ -36,7 +36,6 @@ private:
 };
 
 
-
 template <typename DocumentPredicate>
  std::vector<Document> RequestQueue::AddFindRequest(const  std::string& raw_query, DocumentPredicate document_predicate) {
         if (requests_.size()==min_in_day_){
@@ -53,7 +52,4 @@ template <typename DocumentPredicate>
     }
 
     return vector_result;
-
-    // напишите реализацию
 }
-
