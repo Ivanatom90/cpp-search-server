@@ -1,35 +1,33 @@
 #include "remove_duplicates.h"
 
 void RemoveDuplicates(SearchServer& search_server){
-    std::vector <int> id_v;
+    //std::set <int> id_v;
     std::set <int> doc_duble;
-    std::vector <std::set<std::string>> documents;
-    for (auto [id, words]:search_server.document_to_words_freqs_){
-        std::set <std::string> words_in_doc;
+    std::set<std::string> words;
+    //std::vector <std::set<std::string>> documents;
+    std::set <std::set<std::string>> documents;
 
-        if(!words.empty()){
-        for (auto [word, n]:words){
-
-            words_in_doc.insert(word);
-            }
-        id_v.push_back(id);
-        documents.push_back(words_in_doc);
+    for (auto a = search_server.begin(); a != search_server.end(); a++){
+         //набор слов для id документа
+        if (search_server.GetWordFrequencies(*a).empty()){
+            doc_duble.insert(*a);
+            continue;
+        }
+        for (auto [word, fregs]:search_server.GetWordFrequencies(*a)){
+            words.insert(word);
+        }
+        if (count(documents.begin(), documents.end(), words)!=0){
+            doc_duble.insert(*a);
+        } else {
+       documents.insert(words);
+    }
+    words.clear();
+ }
+        for (int id_del:doc_duble){
+            std::cout<<"Found duplicate document id "<<id_del<<std::endl;
+            search_server.RemoveDocument(id_del);
         }
 
-    }
 
-
-    for(int i = 0; i < documents.size(); i++){
-           for (int j =  documents.size(); j >i; j--){
-               if (documents[i] == documents[j] && i != j){
-                    doc_duble.insert(id_v[j]);
-
-               }
-           }
-    }
-
-    for (int id_del:doc_duble){
-        std::cout<<"Found duplicate document id "<<id_del<<std::endl;
-        search_server.RemoveDocument(id_del);
-    }
 }
+
