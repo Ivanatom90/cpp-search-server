@@ -1,10 +1,8 @@
 #include "remove_duplicates.h"
 
 void RemoveDuplicates(SearchServer& search_server){
-    //std::set <int> id_v;
     std::set <int> doc_duble;
     std::set<std::string> words;
-    //std::vector <std::set<std::string>> documents;
     std::set <std::set<std::string>> documents;
 
     for (auto a = search_server.begin(); a != search_server.end(); a++){
