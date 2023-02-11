@@ -21,7 +21,7 @@ void SearchServer::AddDocument(int document_id, const string& document, Document
         document_to_words_freqs_[document_id][word] += inv_word_count;
     }
     documents_.emplace(document_id, DocumentData{ComputeAverageRating(ratings), status});
-    document_ids_.push_back(document_id);
+    document_ids_.insert(document_id);
 }
 
 vector<Document> SearchServer::FindTopDocuments(const string& raw_query, DocumentStatus status) const {
@@ -144,11 +144,11 @@ bool SearchServer::IsStopWord(const string& word) const {
   //-----------------------------------------------------
 
 
-  std::vector<int>::const_iterator SearchServer::begin(){
+  std::set<int>::const_iterator SearchServer::begin(){
       return document_ids_.begin();
   }
 
-  std::vector<int>::const_iterator SearchServer::end(){
+  std::set<int>::const_iterator SearchServer::end(){
       return document_ids_.end();
   }
 
@@ -169,6 +169,9 @@ return document_to_words_freqs_.at(document_id);
       for (pair<string, double> a : document_to_words_freqs_[document_id]){
                 if(word_to_document_freqs_[a.first].count(document_id)){
                      word_to_document_freqs_[a.first].erase(document_id);
+                     if (word_to_document_freqs_[a.first].empty()){
+                         word_to_document_freqs_.erase(a.first);
+                     }
                 }
       }
 
