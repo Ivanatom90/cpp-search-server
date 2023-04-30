@@ -4,16 +4,17 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <string_view>
 
-std::vector<std::string> SplitIntoWords(const std::string& text);
+std::vector<std::string_view> SplitIntoWords(std::string_view str);
 
 template <typename StringContainer>
-std::set<std::string> MakeUniqueNonEmptyStrings(const StringContainer& strings) {
-    //using namespace std;
-    std::set<std::string> non_empty_strings;
-    for (const std::string& str : strings) {
-        if (!str.empty()) {
-            non_empty_strings.insert(str);
+std::set<std::string, std::less<>> MakeUniqueNonEmptyStrings(const StringContainer& strings) {
+    std::set<std::string, std::less<>> non_empty_strings;
+    for (const  auto& str : strings) {
+        if ( str.size() != 0) {
+            std::string my_str(str);
+            non_empty_strings.emplace(my_str);
         }
     }
     return non_empty_strings;
