@@ -1,9 +1,10 @@
 #include "read_input_functions.h"
 
-std::string ReadLine() {
+std::string_view ReadLine() {
     std::string s;
     getline(std::cin, s);
-    return s;
+    std::string_view str(s);
+    return str;
 }
 
 int ReadLineWithNumber() {
@@ -12,4 +13,3 @@ int ReadLineWithNumber() {
     ReadLine();
     return result;
 }
-
