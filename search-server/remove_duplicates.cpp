@@ -2,11 +2,10 @@
 
 void RemoveDuplicates(SearchServer& search_server){
     std::set <int> doc_duble;
-    std::set<std::string> words;
-    std::set <std::set<std::string>> documents;
+    std::set<std::string_view> words;
+    std::set <std::set<std::string_view>> documents;
 
     for (auto a = search_server.begin(); a != search_server.end(); a++){
-         //набор слов для id документа
         if (search_server.GetWordFrequencies(*a).empty()){
             doc_duble.insert(*a);
             continue;
