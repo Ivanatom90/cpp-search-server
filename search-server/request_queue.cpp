@@ -2,8 +2,7 @@
 
 using namespace std;
 
-vector<Document> RequestQueue::AddFindRequest (const string& raw_query, DocumentStatus status) {
-    // напишите реализацию
+vector<Document> RequestQueue::AddFindRequest (const string_view& raw_query, DocumentStatus status) {
          if (requests_.size()==min_in_day_){
             if(requests_.front().documents_find.size() == 0 ){
                 --empty_request_counter;
@@ -20,12 +19,10 @@ vector<Document> RequestQueue::AddFindRequest (const string& raw_query, Document
  return vector_result;
 }
 
-vector<Document> RequestQueue::AddFindRequest(const string& raw_query) {
-    // напишите реализацию
+vector<Document> RequestQueue::AddFindRequest(const string_view& raw_query) {
            if (requests_.size()==min_in_day_){
             if(requests_.front().documents_find.size() == 0 ){
                 empty_request_counter--;
-                  //  cout<<empty_request_counter<<"    ";
             }
           requests_.pop_front();
         }
@@ -34,10 +31,10 @@ vector<Document> RequestQueue::AddFindRequest(const string& raw_query) {
     requests_.push_back({raw_query, vector_result});
     if(vector_result.size()==0){
         empty_request_counter++;
-        //cout<<empty_request_counter<<"     "<<vector_result.size()<<endl;
     }
 return vector_result;
 }
+
 
 int RequestQueue::GetNoResultRequests() const {
     return empty_request_counter;
