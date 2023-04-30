@@ -26,4 +26,5 @@ struct Document {
 };
 
 
+
 std::ostream& operator<<(std::ostream& out, const Document& document);
