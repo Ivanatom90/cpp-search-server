@@ -28,7 +28,7 @@ void SearchServer::AddDocument(int document_id, std::string_view document, Docum
         word_to_document_freqs_[word][document_id] += inv_word_count;
         document_to_words_freqs_[document_id][word] += inv_word_count;
     }
-    documents_.emplace(document_id, DocumentData{ComputeAverageRating(ratings), status});
+    documents_.emplace(document_id, DocumentData{ComputeAverageRating(ratings), status });
     document_ids_.insert(document_id);
 }
 
